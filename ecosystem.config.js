@@ -14,9 +14,7 @@ module.exports = {
             ref: 'origin/master',
             repo: 'https://github.com/MarkoWilliam/Back-kenza-nodeJS.git',
             path: '/back_node',
-            'pre-deploy-local': '',
             'post-deploy': 'npm install && pm2 reload ecosystem.config.js --env production',
-            'pre-setup': ''
         }
     }
 };

@@ -51,6 +51,7 @@ app.use('/', require('./routes/page'))
 
 //--------Authentification-------------------
 app.use('/auth', require('./routes/auth'));
+// app.use(expressJwt({secret: 'todo-app-super-shared-secret'}).unless({path: ['/api/auth']}));
 
 app.post('*', (req, res) => {
     const nom = req.body.nom;

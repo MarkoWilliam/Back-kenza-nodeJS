@@ -54,24 +54,36 @@ exports.login = (req, res) => {
                 });
 
             } else {
-                // const id = results[0].id;
+                const id = results[0].id;
+                console.log('ID', id)
 
-                // const token = jwt.sign({ id }, process.env.JWT_SECRET, {
-                //     expiresIn: process.env.JWT_EXPIRES_IN
-                // });
+                const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+                    expiresIn: process.env.JWT_EXPIRES_IN
+                });
 
+                console.log("The token is:" + token);
+
+                const cookieOptions = {
+                        expires: new Date(
+                            Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
+                        ),
+                        httpOnly: true
+                    }
+                    // res.cookie("cookies", token, cookieOptions);
+
+                // const token = jwt.sign({ id: id }, 'RANDOM_TOKEN_SECRET', { expiresIn: '24h' });
+                // res.cookie("cookies", token);
                 // console.log("The token is:" + token);
 
-                // const cookieOptions = {
-                //     expires: new DataCue(
-                //         Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
-                //     ),
-                //     httpOnly: true
-                // }
-                // res.cookie('jwt', token, cookieOptions);
 
                 // ---------------Valeur à retourner-----------------
-                res.json(results[0]);
+                res.json({
+                    'reponse': results[0],
+                    token
+                });
+                // res.status(200).send({ token });
+                // res.send({ token });
+                // res.json(token);
             }
 
             //--------------------------------------------------
