@@ -81,9 +81,6 @@ exports.login = (req, res) => {
                     'reponse': results[0],
                     token
                 });
-                // res.status(200).send({ token });
-                // res.send({ token });
-                // res.json(token);
             }
 
             //--------------------------------------------------
