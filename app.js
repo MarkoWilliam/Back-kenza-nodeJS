@@ -5,7 +5,7 @@ const mysql = require("mysql");
 const dotenv = require('dotenv');
 const cors = require('cors');
 const cookieParser = require("cookie-parser");
-
+const multer = require('multer');
 dotenv.config({ path: './.env' });
 
 const app = express();
@@ -56,6 +56,41 @@ app.use('/auth', require('./routes/auth'));
 app.use('/produit', require('./routes/produit'));
 // app.use(expressJwt({secret: 'todo-app-super-shared-secret'}).unless({path: ['/api/auth']}));
 
+///////////////////////Module upload image
+const storage = multer.diskStorage({
+    destination: (req, file, callback) => {
+        callback(null, 'uploads');
+    },
+    filename: (req, file, callback) => {
+        callback(null, Date.now() + path.extname(file.originalname));
+    }
+});
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+}
+const upload = multer({ storage: storage, fileFilter: fileFilter });
+app.post('/upload', upload.single('file'), (req, res, next) => {
+    console.log(req.file.path);
+    const newname = req.file.path.split('\\');
+    console.log();
+    if (!req.file) {
+        console.log("No file is available!");
+        return res.send({
+            success: false
+        });
+    } else {
+        console.log('File is available!');
+        return res.json({
+            name_img: newname[1]
+        });
+    }
+});
+/////////////////////////fin
+
 app.post('*', (req, res) => {
     const nom = req.body.nom;
     const user = { name: nom };
@@ -65,6 +100,6 @@ app.post('*', (req, res) => {
 })
 
 
-app.listen(8080, () => {
+app.listen(8181, () => {
     console.log("Server started on Port 8080");
 })
