@@ -54,6 +54,9 @@ app.use('/auth', require('./routes/auth'));
 
 //-------Produit------------
 app.use('/produit', require('./routes/produit'));
+
+//-------Produit------------
+app.use('/banniere', require('./routes/banniere'));
 // app.use(expressJwt({secret: 'todo-app-super-shared-secret'}).unless({path: ['/api/auth']}));
 
 ///////////////////////Module upload image

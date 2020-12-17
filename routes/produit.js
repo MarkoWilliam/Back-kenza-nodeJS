@@ -19,4 +19,5 @@ router.patch('/pageelement/:id', produitController.pageElement);
 router.post('/insertnotif', produitController.insertnotif);
 
 router.get('/allnotif', produitController.allnotif);
+router.get('/imageban/:image', produitController.imageban);
 module.exports = router;

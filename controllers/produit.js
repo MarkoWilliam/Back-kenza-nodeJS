@@ -150,3 +150,12 @@ exports.allnotif = (req, res) => {
         console.log(err);
     }
 }
+
+exports.imageban = (req, res) => {
+
+    const { image } = req.params;
+
+    let path = __dirname + "/uploads/" + image;
+    path = path.replace('\controllers', '');
+    res.sendFile(path);
+}
