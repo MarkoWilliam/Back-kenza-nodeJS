@@ -76,29 +76,34 @@ exports.produitCheck = (req, res) => {
 }
 
 
+///////////////////////////////////////////////////////////
+////////////Modif TOJO/////////////////////////////////////
+///////////////////////////////////////////////////////////
+//-------------------Insert banniere
 exports.insertban = (req, res) => {
-    const { id_categorie, id_page, nom, position_text, text_ban, url_img } = req.body;
-    try {
-        db.query('INSERT INTO banniere SET ?', { id_categorie: id_categorie, id_page: id_page, nom: nom, position_text: position_text, text_ban: text_ban, url_img: url_img }, (error, results) => {
-            if (results) {
-                return res.send({
-                    success: true
-                });
-            } else {
-                return res.send({
-                    success: error
-                });
-            }
-        })
-    } catch (err) {
-        console.log(err);
+        const { id_categorie, id_page, nom, position_text, text_ban, url_img, contenu_body, titre_body } = req.body;
+        try {
+            db.query('INSERT INTO banniere SET ?', { id_categorie: id_categorie, id_page: id_page, nom: nom, position_text: position_text, text_ban: text_ban, url_img: url_img, contenu_body: contenu_body, titre_body: titre_body }, (error, results) => {
+                if (results) {
+                    return res.send({
+                        success: true
+                    });
+                } else {
+                    return res.send({
+                        success: error
+                    });
+                }
+            })
+        } catch (err) {
+            console.log(err);
+        }
     }
-}
-
+    //-------------------Recup All banniere
 exports.pageElement = (req, res) => {
     try {
-        db.query('SELECT * FROM banniere', async(error, results) => {
-            console.log(results);
+        const { id } = req.params;
+        db.query('SELECT * FROM banniere where id_page=' + id, async(error, results) => {
+            /* console.log(results); */
             if (results) {
                 return res.json(results);
             } else {
@@ -112,50 +117,117 @@ exports.pageElement = (req, res) => {
     }
 }
 
-//insert new notif
+//-------------------Insert new Notification
 exports.insertnotif = (req, res) => {
-    const { contenu, etat, titre } = req.body;
+
+    const { contenu, etat, id_attribute, id_category, id_image, id_product, id_product_attribute, link_rewrite, nom, titre } = req.body;
     const now = new Date();
     try {
-        db.query('INSERT INTO notification SET ?', { titre: titre, contenu: contenu, etat: etat, date_add: now }, (error, results) => {
+        db.query('INSERT INTO notification SET ?', { date_add: now, contenu: contenu, etat: etat, id_attribute: id_attribute, id_category: id_category, id_image: id_image, id_product: id_product, id_product_attribute: id_product_attribute, link_rewrite: link_rewrite, nom: nom, titre: titre }, (error, results) => {
             if (results) {
                 return res.send({
                     success: true
                 });
             } else {
                 return res.send({
-                    success: error
+                    error: error
                 });
             }
         })
+
+        /////////////////////////////////////////////////////////
+        ////////////////Envoie notif vers onsignal///////////////
+        /////////////////////////////////////////////////////////
+        /*var sendNotification = function(data) {
+            var headers = {
+              "Content-Type": "application/json; charset=utf-8",
+              "Authorization": "Basic MTAyMGExZDUtMDU1Yy00NTdmLWI4MmYtNGI2NzM0YWNiOGNk"
+            };
+            
+            var options = {
+              host: "onesignal.com",
+              port: 443,
+              path: "/api/v1/notifications",
+              method: "POST",
+              headers: headers
+            };
+            
+            var https = require('https');
+            var req = https.request(options, function(res) {  
+              res.on('data', function(data) {
+                console.log("Response:");
+                console.log(JSON.parse(data));
+              });
+            });
+            
+            req.on('error', function(e) {
+              console.log("ERROR:");
+              console.log(e);
+            });
+            
+            req.write(JSON.stringify(data));
+            req.end();
+          };
+          
+          var message = { 
+            app_id: "7f02b9d0-c675-4cfe-ba4b-7868a0a398ed",
+            title:{"en":titre},
+            contents: {"en":contenu},
+            included_segments: ["All"]
+          };
+          
+          sendNotification(message);*/
+        /////////////////////////////////////////////////////////
+        ////////////////////////////FIN//////////////////////////
+        /////////////////////////////////////////////////////////
     } catch (err) {
         console.log(err);
     }
 }
 
-
+//-------------------Recup All Notification
 exports.allnotif = (req, res) => {
-    try {
-        db.query('SELECT * FROM notification', async(error, results) => {
-            /* console.log(results);  */
-            if (results) {
-                return res.json(results);
-            } else {
-                return res.json({
-                    success: error
-                });
-            }
-        })
-    } catch (err) {
-        console.log(err);
+        try {
+            db.query("SELECT `id_notification`,`titre`,`contenu`,`etat`, DATE_FORMAT(date_add,'%d/%m/%Y %H:%i') as date_add,`id_product`,`id_attribute`,`id_category`,`nom`,`id_image`,`link_rewrite`,`id_product_attribute` FROM notification", async(error, results) => {
+                /* console.log(results);  */
+                if (results) {
+                    return res.json(results);
+                } else {
+                    return res.json({
+                        success: error
+                    });
+                }
+            })
+        } catch (err) {
+            console.log(err);
+        }
     }
-}
-
+    //------------------ Lecture image uploads
 exports.imageban = (req, res) => {
 
-    const { image } = req.params;
+        const { image } = req.params;
 
-    let path = __dirname + "/uploads/" + image;
-    path = path.replace('\controllers', '');
-    res.sendFile(path);
-}
+        let path = __dirname + "/uploads/" + image;
+        path = path.replace('\controllers', '');
+        res.sendFile(path);
+    }
+    //-------------------Recup All Event
+exports.allEvent = (req, res) => {
+        try {
+            db.query('SELECT * FROM banniere where id_page=3', async(error, results) => {
+                /* console.log(results);  */
+                if (results) {
+                    return res.json(results);
+                } else {
+                    return res.json({
+                        success: error
+                    });
+                }
+            })
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    /////////////////////////////////////////////////////////
+    ////////////////////////////FIN//////////////////////////
+    /////////////////////////////////////////////////////////

@@ -59,7 +59,11 @@ app.use('/produit', require('./routes/produit'));
 app.use('/banniere', require('./routes/banniere'));
 // app.use(expressJwt({secret: 'todo-app-super-shared-secret'}).unless({path: ['/api/auth']}));
 
-///////////////////////Module upload image
+
+////////////////////////////////
+////////////Modif TOJO//////////
+////////////////////////////////
+///----------Module upload image
 const storage = multer.diskStorage({
     destination: (req, file, callback) => {
         callback(null, 'uploads');
@@ -76,6 +80,9 @@ const fileFilter = (req, file, cb) => {
     }
 }
 const upload = multer({ storage: storage, fileFilter: fileFilter });
+
+
+///----------------Upload image Banniere
 app.post('/upload', upload.single('file'), (req, res, next) => {
     console.log(req.file.path);
     const newname = req.file.path.split('\\');
@@ -103,6 +110,6 @@ app.post('*', (req, res) => {
 })
 
 
-app.listen(8181, () => {
+app.listen(process.env.PORT, () => {
     console.log("Server started on Port 8080");
 })
