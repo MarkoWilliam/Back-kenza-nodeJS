@@ -59,6 +59,9 @@ app.use('/produit', require('./routes/produit'));
 app.use('/banniere', require('./routes/banniere'));
 // app.use(expressJwt({secret: 'todo-app-super-shared-secret'}).unless({path: ['/api/auth']}));
 
+//-------Produit mise en avant------------
+app.use('/produit_bo', require('./routes/mise_produit'));
+
 
 ////////////////////////////////
 ////////////Modif TOJO//////////

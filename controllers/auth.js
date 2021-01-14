@@ -103,7 +103,7 @@ exports.register = (req, res) => {
 
     const { nom, email, password } = req.body;
 
-    db.query('SELECT email FROM user user WHERE email = ?', [email], async(error, results) => {
+    db.query('SELECT email FROM user WHERE email = ?', [email], async(error, results) => {
         // if (error) {
         //     console.log("L'inscription réfuer", error);
         // }
