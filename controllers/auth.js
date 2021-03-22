@@ -29,12 +29,14 @@ exports.login = (req, res) => {
             res.status(405).json({
                 message: 'Aucun résultat'
             });
+            console.log("*************************;Aucun résultat");
         }
 
 
 
-        db.query('SELECT * FROM user WHERE email = ?   ', [email], async(error, results) => {
+        db.query('SELECT * FROM user left join type_utilisateur as t_use ON user.id_type = t_use.id_type_user WHERE email = ?   ', [email], async(error, results) => {
             // console.log("ito", results);
+            console.log("Result", results)
             if (req.method === 'OPTIONS') {
                 console.log('! OPTIONS');
                 var headers = {};
@@ -52,7 +54,13 @@ exports.login = (req, res) => {
                 res.status(401).json({
                     message: 'Email or Password id incorrect'
                 });
+                console.log("*************************;Email or Password id incorrect");
 
+            } else if (results[0].etat == 0) {
+                res.status(402).json({
+                    message: 'Votre compte n\'est plus validé'
+                });
+                console.log("*************************;Votre compte n\'est plus validé");
             } else {
                 const id = results[0].id;
                 console.log('ID', id)
@@ -101,34 +109,18 @@ exports.login = (req, res) => {
 exports.register = (req, res) => {
     console.log("Inscriptio 1", req.body);
 
-    const { nom, email, password } = req.body;
+    const { nom, email, password, prenom, id_type, etat, nom_image } = req.body;
 
     db.query('SELECT email FROM user WHERE email = ?', [email], async(error, results) => {
-        // if (error) {
-        //     console.log("L'inscription réfuer", error);
-        // }
-
         if (results.length > 0) {
-            // Cette fonction retourne la view register avec le message d'erreur
-            // Mais il y a une problème
             return res.render('register', {
                 message: 'Email est déja utiliser'
             })
         }
 
-        // let hashedPassword = await bcrypt.hash(password, 8);
-
-        // const encryptPWD = (password) => {
-        //     // Hash password and salt with md5 encryption
-        //     return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
-        // }
-
         let encryptPWD = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-
-        // console.log(hashedPassword)
-
         //-----------INSERTION dans la base de données-------------------
-        db.query('INSERT INTO user SET ?', { nom: nom, email: email, password: encryptPWD }, (error, results) => {
+        db.query('INSERT INTO user SET ?', { nom: nom, email: email, password: encryptPWD, prenom: prenom, id_type: id_type, etat: etat, nom_image: nom_image }, (error, results) => {
             if (results) {
                 console.log("Inscription results", results);
                 // res.send("user registered");
@@ -146,4 +138,96 @@ exports.register = (req, res) => {
         })
     });
 
+}
+
+//---------------- Recup list User Modif Tojo
+exports.listeUser = (req, res) => {
+    try {
+        db.query('select u.id,u.nom,u.prenom,u.email,u.id_type,u.etat,tu.nom_type,u.nom_image  from user as u left outer join type_utilisateur as tu on tu.id_type_user = u.id_type', async(error, results) => {
+            if (results) {
+                return res.json(results);
+            } else {
+                return res.json({
+                    success: error
+                });
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+//---------------- majEtatUser
+exports.majEtatUser = (req, res) => {
+        try {
+            const id = req.body.id;
+            const etat = req.body.etat;
+
+            db.query('UPDATE user SET  etat=?  WHERE id= ?', [etat, id], async(error, results) => {
+                if (results) {
+                    res.json(results);
+                }
+            })
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    //---------------- majEtatUser
+exports.majUser = (req, res) => {
+    try {
+
+        const email = req.body.email;
+        const etat = req.body.etat;
+        const id = req.body.id;
+        const id_type = req.body.id_type;
+        const nom = req.body.nom;
+        const password = req.body.password;
+        const prenom = req.body.prenom;
+        const nom_image = req.body.nom_image;
+
+        let encryptPWD = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+
+        db.query('UPDATE user SET  email=?,etat=?,id_type=?,nom=?,password=?,prenom=?,nom_image=?  WHERE id= ?', [email, etat, id_type, nom, encryptPWD, prenom, nom_image, id], async(error, results) => {
+            if (results) {
+                res.json(results);
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+//-----------------Type User--------------------
+exports.typeUser = (req, res) => {
+    try {
+        db.query('SELECT * FROM type_utilisateur', async(error, results) => {
+            if (results) {
+                return res.json(results);
+            } else {
+                return res.json({
+                    success: error
+                });
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+//--------------Insertion type utilisateur------------------------
+//-------------Inscription---------------------
+exports.insertType = (req, res) => {
+    console.log(req.body);
+    const { nom_type } = req.body;
+    try {
+        db.query('INSERT INTO type_utilisateur SET ?', { nom_type: nom_type }, (error, results) => {
+            if (results) {
+                res.json(results);
+            } else {
+                return res.json(error);
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
 }

@@ -17,6 +17,7 @@ const corsOptions = {
 
 
 app.use(cors(corsOptions));
+app.use('/image', express.static('./uploads'));
 
 //--Connection avec la base de donnée--
 const db = mysql.createConnection({
@@ -62,6 +63,14 @@ app.use('/banniere', require('./routes/banniere'));
 //-------Produit mise en avant------------
 app.use('/produit_bo', require('./routes/mise_produit'));
 
+//--------Offres--------------
+app.use('/offres', require('./routes/offres'));
+
+//------- Mobile login---------
+app.use('/App_Employee_Admin', require('./routes/App_Employee_Admin'));
+
+//--------produit-BO---------
+app.use('/pushProduit', require('./routes/produit_bo'));
 
 ////////////////////////////////
 ////////////Modif TOJO//////////
@@ -98,7 +107,8 @@ app.post('/upload', upload.single('file'), (req, res, next) => {
     } else {
         console.log('File is available!');
         return res.json({
-            name_img: newname[1]
+            name_img: newname[1],
+            file: req.file
         });
     }
 });

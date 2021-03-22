@@ -138,45 +138,45 @@ exports.insertnotif = (req, res) => {
         /////////////////////////////////////////////////////////
         ////////////////Envoie notif vers onsignal///////////////
         /////////////////////////////////////////////////////////
-        /*var sendNotification = function(data) {
+        var sendNotification = function(data) {
             var headers = {
-              "Content-Type": "application/json; charset=utf-8",
-              "Authorization": "Basic MTAyMGExZDUtMDU1Yy00NTdmLWI4MmYtNGI2NzM0YWNiOGNk"
+                "Content-Type": "application/json; charset=utf-8",
+                "Authorization": "Basic MTAyMGExZDUtMDU1Yy00NTdmLWI4MmYtNGI2NzM0YWNiOGNk"
             };
-            
+
             var options = {
-              host: "onesignal.com",
-              port: 443,
-              path: "/api/v1/notifications",
-              method: "POST",
-              headers: headers
+                host: "onesignal.com",
+                port: 443,
+                path: "/api/v1/notifications",
+                method: "POST",
+                headers: headers
             };
-            
+
             var https = require('https');
-            var req = https.request(options, function(res) {  
-              res.on('data', function(data) {
-                console.log("Response:");
-                console.log(JSON.parse(data));
-              });
+            var req = https.request(options, function(res) {
+                res.on('data', function(data) {
+                    console.log("Response:");
+                    console.log(JSON.parse(data));
+                });
             });
-            
+
             req.on('error', function(e) {
-              console.log("ERROR:");
-              console.log(e);
+                console.log("ERROR:");
+                console.log(e);
             });
-            
+
             req.write(JSON.stringify(data));
             req.end();
-          };
-          
-          var message = { 
+        };
+
+        var message = {
             app_id: "7f02b9d0-c675-4cfe-ba4b-7868a0a398ed",
-            title:{"en":titre},
-            contents: {"en":contenu},
+            title: { "en": titre },
+            contents: { "en": contenu },
             included_segments: ["All"]
-          };
-          
-          sendNotification(message);*/
+        };
+
+        sendNotification(message);
         /////////////////////////////////////////////////////////
         ////////////////////////////FIN//////////////////////////
         /////////////////////////////////////////////////////////
@@ -214,7 +214,7 @@ exports.imageban = (req, res) => {
     //-------------------Recup All Event
 exports.allEvent = (req, res) => {
         try {
-            db.query('SELECT * FROM banniere where id_page=3', async(error, results) => {
+            db.query('SELECT * FROM evenement where etat=1', async(error, results) => {
                 /* console.log(results);  */
                 if (results) {
                     return res.json(results);
@@ -231,3 +231,204 @@ exports.allEvent = (req, res) => {
     /////////////////////////////////////////////////////////
     ////////////////////////////FIN//////////////////////////
     /////////////////////////////////////////////////////////
+
+//---------------- majEtatNotif
+exports.majNotif = (req, res) => {
+    try {
+        const id = req.body.id;
+        const etat = req.body.etat;
+
+        db.query('UPDATE notification SET  etat=?  WHERE id_notification= ?', [etat, id], async(error, results) => {
+            if (results) {
+                res.json(results);
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+//---------------- renVnotif
+exports.renVnotif = (req, res) => {
+    try {
+
+        const { id_notification, titre, contenu, etat, date_add, id_product, id_attribute, id_category, nom, id_image, link_rewrite, id_product_attribute } = req.body;
+        const now = new Date();
+
+        db.query('UPDATE notification SET  date_add=?  WHERE id_notification= ?', [now, id_notification], async(error, results) => {
+                if (results) {
+                    res.json(results);
+                }
+            })
+            /////////////////////////////////////////////////////////
+            ////////////////Envoie notif vers onsignal///////////////
+            /////////////////////////////////////////////////////////
+        var sendNotification = function(data) {
+            var headers = {
+                "Content-Type": "application/json; charset=utf-8",
+                "Authorization": "Basic MTAyMGExZDUtMDU1Yy00NTdmLWI4MmYtNGI2NzM0YWNiOGNk"
+            };
+
+            var options = {
+                host: "onesignal.com",
+                port: 443,
+                path: "/api/v1/notifications",
+                method: "POST",
+                headers: headers
+            };
+
+            var https = require('https');
+            var req = https.request(options, function(res) {
+                res.on('data', function(data) {
+                    console.log("Response:");
+                    console.log(JSON.parse(data));
+                });
+            });
+
+            req.on('error', function(e) {
+                console.log("ERROR:");
+                console.log(e);
+            });
+
+            req.write(JSON.stringify(data));
+            req.end();
+        };
+
+        var message = {
+            app_id: "7f02b9d0-c675-4cfe-ba4b-7868a0a398ed",
+            title: { "en": titre },
+            contents: { "en": contenu },
+            included_segments: ["All"]
+        };
+
+        sendNotification(message);
+        /////////////////////////////////////////////////////////
+        ////////////////////////////FIN//////////////////////////
+        /////////////////////////////////////////////////////////   
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
+
+exports.allpage = (req, res) => {
+    try {
+        db.query('SELECT * FROM page_apk_client', async(error, results) => {
+            /* console.log(results);  */
+            if (results) {
+                return res.json(results);
+            } else {
+                return res.json({
+                    success: error
+                });
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
+
+
+exports.allevenement = (req, res) => {
+    try {
+        db.query('SELECT * FROM evenement order by titre', async(error, results) => {
+            /* console.log(results);  */
+            if (results) {
+                return res.json(results);
+            } else {
+                return res.json({
+                    success: error
+                });
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+exports.insertevent = (req, res) => {
+    console.log(req.body);
+    const { nom_image, titre, texte, etat, lien } = req.body;
+    try {
+        db.query('INSERT INTO evenement SET ?', { nom_image: nom_image, titre: titre, texte: texte, etat: etat, lien: lien }, (error, results) => {
+            if (results) {
+                return res.send({
+                    success: true
+                });
+            } else {
+                return res.send({
+                    success: error
+                });
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
+exports.updateevent = (req, res) => {
+    console.log(req.body);
+
+
+    const { id_event, nom_image, titre, texte, lien, etat } = req.body;
+    try {
+        db.query('UPDATE evenement SET  nom_image=?, titre=?, texte=?, etat=?,lien=?  WHERE id_event= ?', [nom_image, titre, texte, etat, lien, id_event], async(error, results) => {
+            if (results) {
+                return res.send({
+                    success: true
+                });
+            } else {
+                return res.send({
+                    success: error
+                });
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
+
+//---------------- majEtatEvent
+exports.majEtatEvent = (req, res) => {
+        try {
+            const id = req.body.id;
+            const etat = req.body.etat;
+
+            db.query('UPDATE evenement SET  etat=?  WHERE id_event= ?', [etat, id], async(error, results) => {
+                if (results) {
+                    return res.send({
+                        success: true
+                    });
+                } else {
+                    return res.send({
+                        success: error
+                    });
+                }
+            })
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    //-------------------Recup All Notification App
+exports.allnotifapp = (req, res) => {
+    try {
+        db.query("SELECT `id_notification`,`titre`,`contenu`,`etat`, DATE_FORMAT(date_add,'%d/%m/%Y %H:%i') as date_add,`id_product`,`id_attribute`,`id_category`,`nom`,`id_image`,`link_rewrite`,`id_product_attribute` FROM notification where etat=1", async(error, results) => {
+            /* console.log(results);  */
+            if (results) {
+                return res.json(results);
+            } else {
+                return res.json({
+                    success: error
+                });
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}

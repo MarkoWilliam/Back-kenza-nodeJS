@@ -27,5 +27,22 @@ router.get('/allnotif', produitController.allnotif);
 router.get('/imageban/:image', produitController.imageban);
 //------- Recup All event
 router.get('/allEvent', produitController.allEvent);
+//-------------- maj etat Notif
+router.post('/majNotif', produitController.majNotif);
+//-------------- maj etat Notif
+router.post('/renVnotif', produitController.renVnotif);
+//-------------- Get allpage
+router.get('/allpage', produitController.allpage);
+//-------------- Get allevent
+router.get('/allevenement', produitController.allevenement);
+//-------------- isertion evenement
+router.post('/insertevent', produitController.insertevent);
+//-------------- update evenement
+router.post('/updateevent', produitController.updateevent);
+//-------------- maj etat Event
+router.post('/majEtatEvent', produitController.majEtatEvent);
+//------- Recup All notification
+router.get('/allnotifapp', produitController.allnotifapp);
+
 
 module.exports = router;
