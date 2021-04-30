@@ -12,7 +12,7 @@ const db = mysql.createConnection({
 exports.listeOffres = (req, res) => {
     try {
         // db.query('SELECT * FROM offres  WHERE etat = 1  order by code_offre ASC', async(error, results) => {
-        db.query('SELECT * FROM offres   order by code_offre ASC', async(error, results) => {
+        db.query('SELECT * FROM offres   order by code_offre DESC', async(error, results) => {
             if (results) {
                 return res.json(results);
             } else {
@@ -20,6 +20,7 @@ exports.listeOffres = (req, res) => {
                     success: error
                 })
             }
+            listeOffres
         });
     } catch (err) {
         console.log(err);

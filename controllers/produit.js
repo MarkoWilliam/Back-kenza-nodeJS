@@ -123,7 +123,7 @@ exports.insertnotif = (req, res) => {
     const { contenu, etat, id_attribute, id_category, id_image, id_product, id_product_attribute, link_rewrite, nom, titre } = req.body;
     const now = new Date();
     try {
-        db.query('INSERT INTO notification SET ?', { date_add: now, contenu: contenu, etat: etat, id_attribute: id_attribute, id_category: id_category, id_image: id_image, id_product: id_product, id_product_attribute: id_product_attribute, link_rewrite: link_rewrite, nom: nom, titre: titre }, (error, results) => {
+        db.query('INSERT INTO notification SET ?', { date_add: now, contenu: contenu, etat: etat, id_attribute: id_attribute, id_category: id_category, id_image: id_image, id_product: id_product, id_product_attribute: id_product_attribute, link_rewrite: link_rewrite, nom: nom, titre: titre, image: 1 }, (error, results) => {
             if (results) {
                 return res.send({
                     success: true
@@ -188,7 +188,7 @@ exports.insertnotif = (req, res) => {
 //-------------------Recup All Notification
 exports.allnotif = (req, res) => {
         try {
-            db.query("SELECT `id_notification`,`titre`,`contenu`,`etat`, DATE_FORMAT(date_add,'%d/%m/%Y %H:%i') as date_add,`id_product`,`id_attribute`,`id_category`,`nom`,`id_image`,`link_rewrite`,`id_product_attribute` FROM notification", async(error, results) => {
+            db.query("SELECT `id_notification`,`titre`,`contenu`,`etat`, DATE_FORMAT(date_add,'%d/%m/%Y %H:%i') as date_add,`id_product`,`id_attribute`,`id_category`,`nom`,`id_image`,`link_rewrite`,`id_product_attribute`,`image`  FROM notification where etat=1", async(error, results) => {
                 /* console.log(results);  */
                 if (results) {
                     return res.json(results);
@@ -214,7 +214,7 @@ exports.imageban = (req, res) => {
     //-------------------Recup All Event
 exports.allEvent = (req, res) => {
         try {
-            db.query('SELECT * FROM evenement where etat=1', async(error, results) => {
+            db.query('SELECT * FROM evenement where etat=1 GROUP BY id_event DESC', async(error, results) => {
                 /* console.log(results);  */
                 if (results) {
                     return res.json(results);
@@ -334,7 +334,7 @@ exports.allpage = (req, res) => {
 
 exports.allevenement = (req, res) => {
     try {
-        db.query('SELECT * FROM evenement order by titre', async(error, results) => {
+        db.query('SELECT * FROM evenement order by id_event DESC', async(error, results) => {
             /* console.log(results);  */
             if (results) {
                 return res.json(results);
@@ -351,9 +351,9 @@ exports.allevenement = (req, res) => {
 
 exports.insertevent = (req, res) => {
     console.log(req.body);
-    const { nom_image, titre, texte, etat, lien } = req.body;
+    const { nom_image, titre, texte, etat, lien, nom_button, condition_event, libellee, message_event } = req.body;
     try {
-        db.query('INSERT INTO evenement SET ?', { nom_image: nom_image, titre: titre, texte: texte, etat: etat, lien: lien }, (error, results) => {
+        db.query('INSERT INTO evenement SET ?', { nom_image: nom_image, titre: titre, texte: texte, etat: etat, lien: lien, nom_button: nom_button, condition_event: condition_event, libellee: libellee, message_event: message_event }, (error, results) => {
             if (results) {
                 return res.send({
                     success: true
@@ -374,9 +374,11 @@ exports.updateevent = (req, res) => {
     console.log(req.body);
 
 
-    const { id_event, nom_image, titre, texte, lien, etat } = req.body;
+    const { id_event, nom_image, titre, texte, etat, lien, nom_button, condition_event, libellee, message_event } = req.body;
     try {
-        db.query('UPDATE evenement SET  nom_image=?, titre=?, texte=?, etat=?,lien=?  WHERE id_event= ?', [nom_image, titre, texte, etat, lien, id_event], async(error, results) => {
+        console.log("Test");
+        db.query('UPDATE evenement SET  nom_image=?, titre=?, texte=?, etat=?, lien=?, nom_button = ?, condition_event=?, 	libellee=? , message_event=?  WHERE id_event= ?', [nom_image, titre, texte, etat, lien, nom_button, condition_event, libellee, message_event, id_event], async(error, results) => {
+            console.log("*******", results)
             if (results) {
                 return res.send({
                     success: true
@@ -418,7 +420,7 @@ exports.majEtatEvent = (req, res) => {
     //-------------------Recup All Notification App
 exports.allnotifapp = (req, res) => {
     try {
-        db.query("SELECT `id_notification`,`titre`,`contenu`,`etat`, DATE_FORMAT(date_add,'%d/%m/%Y %H:%i') as date_add,`id_product`,`id_attribute`,`id_category`,`nom`,`id_image`,`link_rewrite`,`id_product_attribute` FROM notification where etat=1", async(error, results) => {
+        db.query("SELECT `id_notification`,`titre`,`contenu`,`etat`, DATE_FORMAT(date_add,'%d/%m/%Y %H:%i') as date_add,`id_product`,`id_attribute`,`id_category`,`nom`,`id_image`,`link_rewrite`,`id_product_attribute`,`image` FROM notification where etat=1", async(error, results) => {
             /* console.log(results);  */
             if (results) {
                 return res.json(results);
@@ -426,6 +428,43 @@ exports.allnotifapp = (req, res) => {
                 return res.json({
                     success: error
                 });
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
+exports.derniere = (req, res) => {
+    try {
+        db.query('SELECT * FROM evenement order by id_event DESC LIMIT 1', async(error, results) => {
+            /* console.log(results);  */
+            if (results) {
+                return res.json(results);
+            } else {
+                return res.json({
+                    success: error
+                });
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+//---------------- Verion avec image ou pas 
+exports.image = (req, res) => {
+    try {
+        const id = req.body.id;
+        const image = req.body.image;
+
+        console.log("Mode image", id, image)
+
+        db.query('UPDATE notification SET  image=?  WHERE id_notification= ?', [image, id], async(error, results) => {
+            if (results) {
+                res.json(results);
+                console.log("Mode image", results)
             }
         })
     } catch (err) {

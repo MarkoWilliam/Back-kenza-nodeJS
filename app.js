@@ -72,6 +72,15 @@ app.use('/App_Employee_Admin', require('./routes/App_Employee_Admin'));
 //--------produit-BO---------
 app.use('/pushProduit', require('./routes/produit_bo'));
 
+//--------menu evenement---------
+app.use('/menuevent', require('./routes/menu_evenement'));
+
+//--------menu evenement---------
+app.use('/device', require('./routes/device'));
+
+//--------menu Texte---------
+app.use('/translate', require('./routes/texte'));
+
 ////////////////////////////////
 ////////////Modif TOJO//////////
 ////////////////////////////////

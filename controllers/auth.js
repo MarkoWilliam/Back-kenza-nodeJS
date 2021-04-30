@@ -50,7 +50,7 @@ exports.login = (req, res) => {
                 res.writeHead(200, en - têtes);
                 res.end();
 
-            } else if (!results || !(bcrypt.compareSync(password, results[0].password))) {
+            } else if (!results || results == '' || !(bcrypt.compareSync(password, results[0].password))) {
                 res.status(401).json({
                     message: 'Email or Password id incorrect'
                 });

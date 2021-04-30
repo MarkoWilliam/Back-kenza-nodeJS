@@ -33,7 +33,7 @@ router.post('/majNotif', produitController.majNotif);
 router.post('/renVnotif', produitController.renVnotif);
 //-------------- Get allpage
 router.get('/allpage', produitController.allpage);
-//-------------- Get allevent
+//-------------- Get allevent------------
 router.get('/allevenement', produitController.allevenement);
 //-------------- isertion evenement
 router.post('/insertevent', produitController.insertevent);
@@ -43,6 +43,12 @@ router.post('/updateevent', produitController.updateevent);
 router.post('/majEtatEvent', produitController.majEtatEvent);
 //------- Recup All notification
 router.get('/allnotifapp', produitController.allnotifapp);
+
+//-------------- Get allevent------------
+router.get('/derniere', produitController.derniere);
+
+//----------------Mode avec ou sans image------------- 
+router.post('/image', produitController.image);
 
 
 module.exports = router;
