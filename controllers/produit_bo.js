@@ -19,6 +19,7 @@ exports.listPush = (req, res) => {
                 });
 
                 res.json(response)
+
                 console.log("List Produit mise en avant", response)
             });
         } catch (err) {

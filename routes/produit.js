@@ -33,6 +33,8 @@ router.post('/majNotif', produitController.majNotif);
 router.post('/renVnotif', produitController.renVnotif);
 //-------------- Get allpage
 router.get('/allpage', produitController.allpage);
+
+
 //-------------- Get allevent------------
 router.get('/allevenement', produitController.allevenement);
 //-------------- isertion evenement
@@ -41,6 +43,8 @@ router.post('/insertevent', produitController.insertevent);
 router.post('/updateevent', produitController.updateevent);
 //-------------- maj etat Event
 router.post('/majEtatEvent', produitController.majEtatEvent);
+
+
 //------- Recup All notification
 router.get('/allnotifapp', produitController.allnotifapp);
 
@@ -50,5 +54,18 @@ router.get('/derniere', produitController.derniere);
 //----------------Mode avec ou sans image------------- 
 router.post('/image', produitController.image);
 
+
+
+//-------------- Carte Métisse------------
+router.get('/listeCarte', produitController.listeCarte);
+//-------------- isertion evenement
+router.post('/insertCarte', produitController.insertCarte);
+//-------------- update evenement
+router.post('/updateCarte', produitController.updateCarte);
+
+router.post('/majEtatCarte', produitController.majEtatCarte);
+
+//-------------- Carte Métisse------------
+router.get('/listeCarteApk', produitController.listeCarteApk);
 
 module.exports = router;

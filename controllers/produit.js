@@ -118,77 +118,256 @@ exports.pageElement = (req, res) => {
 }
 
 //-------------------Insert new Notification
+// exports.insertnotif = (req, res) => {
+
+//     const { contenu, etat, id_attribute, id_category, id_image, id_product, id_product_attribute, link_rewrite, nom, titre, nom_image, time, date_add } = req.body;
+//     console.log(req.body);
+//     let now = new Date();
+//     /////////////////////////////////////////////////////////
+//     ////////////////Envoie notif vers onsignal///////////////
+//     /////////////////////////////////////////////////////////
+//     var sendNotification = function(data) {
+//         var headers = {
+//             "Content-Type": "application/json; charset=utf-8",
+//             "Authorization": "Basic MTAyMGExZDUtMDU1Yy00NTdmLWI4MmYtNGI2NzM0YWNiOGNk"
+//         };
+
+//         var options = {
+//             host: "onesignal.com",
+//             port: 443,
+//             path: "/api/v1/notifications",
+//             method: "POST",
+//             headers: headers
+//         };
+
+//         var https = require('https');
+//         var req = https.request(options, function(res) {
+//             res.on('data', function(data) {
+//                 console.log("Response:");
+//                 console.log(JSON.parse(data));
+//             });
+//         });
+
+//         req.on('error', function(e) {
+//             console.log("ERROR:");
+//             console.log(e);
+//         });
+
+//         req.write(JSON.stringify(data));
+//         req.end();
+//     };
+
+
+
+//     /////////////////////////////////////////////////////////
+//     ////////////////////////////FIN//////////////////////////
+//     /////////////////////////////////////////////////////////
+//     try {
+//         var message = {
+//             app_id: "7f02b9d0-c675-4cfe-ba4b-7868a0a398ed",
+//             headings: { "en": titre, "fr": titre },
+//             contents: { "en": contenu, "fr": contenu },
+//             included_segments: ["All"],
+//             ios_attachments: {},
+//         };
+
+//         if (date_add) {
+//             now = new Date(date_add);
+//             message['send_after'] = new Date(date_add)
+//         }
+
+//         if (id_product) {
+//             image = process.env.BASE_URL_KENZA + id_image + '-small_default/' + link_rewrite + '.jpg';
+//             const d = new Date();
+//             let str = d.getTime();
+//             str = str.toString().substring(5);
+//             message['ios_attachments']['id' + str] = image;
+//             message['big_picture'] = image;
+//             message['data'] = process.env.BASE_URL_KENZA + 'accueil' + '/' + id_product + '-' + id_product_attribute + '-' + link_rewrite + `.html`;
+
+//             db.query('INSERT INTO notification SET ?', { date_add: now, contenu: contenu, etat: etat, id_attribute: id_attribute, id_category: id_category, id_image: id_image, id_product: id_product, id_product_attribute: id_product_attribute, link_rewrite: id_product_attribute, nom: id_product_attribute, titre: titre, image: 1, nom_image: '' }, (error, results) => {
+//                 if (results) {
+//                     // sendNotification(message);
+//                     return res.send({
+//                         success: true
+//                     });
+//                 } else {
+//                     return res.send({
+//                         error: error
+//                     });
+//                 }
+//             })
+//         } else {
+//             if (nom_image) {
+//                 image = process.env.BASE_URL + 'produit/imageban/' + nom_image;
+//                 const d = new Date();
+//                 let str = d.getTime();
+//                 str = str.toString().substring(5);
+//                 message['ios_attachments']['id' + str] = image;
+//                 message['big_picture'] = image;
+//             }
+//             db.query('INSERT INTO notification SET ?', { date_add: now, contenu: contenu, etat: etat, id_attribute: '', id_category: '', id_image: '', id_product: '', id_product_attribute: '', link_rewrite: '', nom: '', titre: titre, image: 1, nom_image: nom_image }, (error, results) => {
+//                 if (results) {
+//                     // sendNotification(message);
+//                     return res.send({
+//                         success: true
+//                     });
+//                 } else {
+//                     return res.send({
+//                         error: error
+//                     });
+//                 }
+//             })
+//         }
+
+//     } catch (err) {
+//         console.log(err);
+//     }
+// }
+
+
+//-------------------Insert new Notification
 exports.insertnotif = (req, res) => {
 
-    const { contenu, etat, id_attribute, id_category, id_image, id_product, id_product_attribute, link_rewrite, nom, titre } = req.body;
-    const now = new Date();
-    try {
-        db.query('INSERT INTO notification SET ?', { date_add: now, contenu: contenu, etat: etat, id_attribute: id_attribute, id_category: id_category, id_image: id_image, id_product: id_product, id_product_attribute: id_product_attribute, link_rewrite: link_rewrite, nom: nom, titre: titre, image: 1 }, (error, results) => {
-            if (results) {
-                return res.send({
-                    success: true
-                });
-            } else {
-                return res.send({
-                    error: error
-                });
-            }
-        })
-
-        /////////////////////////////////////////////////////////
-        ////////////////Envoie notif vers onsignal///////////////
-        /////////////////////////////////////////////////////////
-        var sendNotification = function(data) {
-            var headers = {
-                "Content-Type": "application/json; charset=utf-8",
-                "Authorization": "Basic MTAyMGExZDUtMDU1Yy00NTdmLWI4MmYtNGI2NzM0YWNiOGNk"
-            };
-
-            var options = {
-                host: "onesignal.com",
-                port: 443,
-                path: "/api/v1/notifications",
-                method: "POST",
-                headers: headers
-            };
-
-            var https = require('https');
-            var req = https.request(options, function(res) {
-                res.on('data', function(data) {
-                    console.log("Response:");
-                    console.log(JSON.parse(data));
-                });
-            });
-
-            req.on('error', function(e) {
-                console.log("ERROR:");
-                console.log(e);
-            });
-
-            req.write(JSON.stringify(data));
-            req.end();
+    const { contenu, etat, id_attribute, id_category, id_image, id_product, id_product_attribute, link_rewrite, nom, titre, nom_image, time, date_add } = req.body;
+    console.log("Data **********************************", req.body);
+    let now = new Date();
+    /////////////////////////////////////////////////////////
+    ////////////////Envoie notif vers onsignal///////////////
+    /////////////////////////////////////////////////////////
+    var sendNotification = function(data) {
+        var headers = {
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": "Basic MTAyMGExZDUtMDU1Yy00NTdmLWI4MmYtNGI2NzM0YWNiOGNk"
         };
 
+        var options = {
+            host: "onesignal.com",
+            port: 443,
+            path: "/api/v1/notifications",
+            method: "POST",
+            headers: headers
+        };
+
+        var https = require('https');
+        var req = https.request(options, function(res) {
+            res.on('data', function(data) {
+                console.log("Response:");
+                console.log(JSON.parse(data));
+            });
+        });
+
+        req.on('error', function(e) {
+            console.log("ERROR:");
+            console.log(e);
+        });
+
+        req.write(JSON.stringify(data));
+        req.end();
+    };
+
+
+
+    /////////////////////////////////////////////////////////
+    ////////////////////////////FIN//////////////////////////
+    /////////////////////////////////////////////////////////
+    try {
         var message = {
             app_id: "7f02b9d0-c675-4cfe-ba4b-7868a0a398ed",
-            title: { "en": titre },
-            contents: { "en": contenu },
-            included_segments: ["All"]
+            headings: { "en": titre, "fr": titre },
+            contents: { "en": contenu, "fr": contenu },
+            included_segments: ["All"],
+            ios_attachments: {},
         };
 
-        sendNotification(message);
-        /////////////////////////////////////////////////////////
-        ////////////////////////////FIN//////////////////////////
-        /////////////////////////////////////////////////////////
+        if (date_add) {
+            now = new Date(date_add);
+            message['send_after'] = new Date(date_add)
+        }
+
+        if (id_product) {
+
+            console.log("******", 'ato')
+            image = process.env.BASE_URL_KENZA + id_image + '-small_default/' + link_rewrite + '.jpg';
+            const d = new Date();
+            let str = d.getTime();
+            str = str.toString().substring(5);
+            message['ios_attachments']['id' + str] = image;
+            message['big_picture'] = image;
+            message['data'] = process.env.BASE_URL_KENZA + 'accueil' + '/' + id_product + '-' + id_product_attribute + '-' + link_rewrite + `.html`;
+            // console.log("if id_product existe", now);
+            if (date_add) {
+                date = date_add;
+            } else {
+                date = new Date();
+            }
+            db.query('INSERT INTO notification SET ?', { date_add: date, contenu: contenu, etat: etat, id_attribute: id_attribute, id_category: id_category, id_image: id_image, id_product: id_product, id_product_attribute: id_product_attribute, link_rewrite: id_product_attribute, nom: id_product_attribute, titre: titre, image: 1, nom_image: '' }, (error, results) => {
+                if (results) {
+                    sendNotification(message);
+                    return res.send({
+                        success: true
+                    });
+                } else {
+                    return res.send({
+                        error: error
+                    });
+                }
+            })
+        } else {
+            if (nom_image) {
+                db.query('INSERT INTO notification SET ?', { date_add: now, contenu: contenu, etat: etat, id_attribute: '', id_category: '', id_image: '', id_product: '', id_product_attribute: '', link_rewrite: '', nom: '', titre: titre, image: 1, nom_image: nom_image }, (error, results) => {
+                    if (results) {
+                        image = process.env.BASE_URL + 'produit/imageban/' + nom_image;
+                        const d = new Date();
+                        let str = d.getTime();
+                        str = str.toString().substring(5);
+                        message['ios_attachments']['id' + str] = image;
+                        message['big_picture'] = image;
+                        console.log("******", 'ato 2');
+                        sendNotification(message);
+                        return res.send({
+                            success: true
+                        });
+                    } else {
+                        return res.send({
+                            error: error
+                        });
+                    }
+                })
+            } else {
+                console.log("******", 'ato 3')
+                image = '';
+                const d = new Date();
+                let str = d.getTime();
+                str = str.toString().substring(5);
+                message['ios_attachments']['id' + str] = image;
+                message['big_picture'] = image;
+                db.query('INSERT INTO notification SET ?', { date_add: now, contenu: contenu, etat: etat, id_attribute: '', id_category: '', id_image: '', id_product: '', id_product_attribute: '', link_rewrite: '', nom: '', titre: titre, image: 1, nom_image: '' }, (error, results) => {
+                    if (results) {
+                        sendNotification(message);
+                        return res.send({
+                            success: true
+                        });
+                    } else {
+                        return res.send({
+                            error: error
+                        });
+                    }
+                })
+            }
+
+        }
+
     } catch (err) {
         console.log(err);
     }
 }
 
+
 //-------------------Recup All Notification
 exports.allnotif = (req, res) => {
         try {
-            db.query("SELECT `id_notification`,`titre`,`contenu`,`etat`, DATE_FORMAT(date_add,'%d/%m/%Y %H:%i') as date_add,`id_product`,`id_attribute`,`id_category`,`nom`,`id_image`,`link_rewrite`,`id_product_attribute`,`image`  FROM notification where etat=1", async(error, results) => {
+            db.query("SELECT `id_notification`,`titre`,`contenu`,`etat`, date_add,`id_product`,`id_attribute`,`id_category`,`nom`,`id_image`,`link_rewrite`,`id_product_attribute`,`image`, `nom_image`  FROM notification where etat=1 ORDER BY date_add DESC", async(error, results) => {
                 /* console.log(results);  */
                 if (results) {
                     return res.json(results);
@@ -252,7 +431,8 @@ exports.majNotif = (req, res) => {
 exports.renVnotif = (req, res) => {
     try {
 
-        const { id_notification, titre, contenu, etat, date_add, id_product, id_attribute, id_category, nom, id_image, link_rewrite, id_product_attribute } = req.body;
+        const { contenu, etat, id_attribute, id_category, id_image, id_product, id_product_attribute, link_rewrite, nom, titre, nom_image, time, date_add } = req.body;
+
         const now = new Date();
 
         db.query('UPDATE notification SET  date_add=?  WHERE id_notification= ?', [now, id_notification], async(error, results) => {
@@ -280,7 +460,7 @@ exports.renVnotif = (req, res) => {
             var https = require('https');
             var req = https.request(options, function(res) {
                 res.on('data', function(data) {
-                    console.log("Response:");
+                    console.log("Response:", data);
                     console.log(JSON.parse(data));
                 });
             });
@@ -294,12 +474,31 @@ exports.renVnotif = (req, res) => {
             req.end();
         };
 
+
+
+
         var message = {
             app_id: "7f02b9d0-c675-4cfe-ba4b-7868a0a398ed",
-            title: { "en": titre },
-            contents: { "en": contenu },
-            included_segments: ["All"]
+            headings: { "en": titre, "fr": titre },
+            contents: { "en": contenu, "fr": contenu },
+            included_segments: ["All"],
+            ios_attachments: {},
         };
+        if (date_add) {
+            message['send_after'] = new Date(date_add)
+        }
+
+        if (nom_image) {
+            image = process.env.BASE_URL + 'produit/imageban/' + nom_image;
+            const d = new Date();
+            message['ios_attachments']['id' + d.getTime()] = image;
+            message['big_picture'] = image;
+        } else {
+            image = process.env.BASE_URL_KENZA + id_image + '-small_default/' + link_rewrite + '.jpg';
+            const d = new Date();
+            message['ios_attachments']['id' + d.getTime()] = image;
+            message['big_picture'] = image;
+        }
 
         sendNotification(message);
         /////////////////////////////////////////////////////////
@@ -465,6 +664,112 @@ exports.image = (req, res) => {
             if (results) {
                 res.json(results);
                 console.log("Mode image", results)
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
+//__________________________________Carte metisse____________________________________
+
+exports.listeCarte = (req, res) => {
+    try {
+        db.query('SELECT * FROM carte_metisse order by id DESC', async(error, results) => {
+            if (results) {
+                return res.json(results);
+            } else {
+                return res.json({
+                    success: error
+                });
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+exports.insertCarte = (req, res) => {
+    console.log(req.body);
+    const { nom_image, etat } = req.body;
+    try {
+        db.query('INSERT INTO carte_metisse SET ?', { nom_image: nom_image, etat: etat }, (error, results) => {
+            if (results) {
+                return res.send({
+                    success: true
+                });
+            } else {
+                return res.send({
+                    success: error
+                });
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
+exports.updateCarte = (req, res) => {
+    console.log(req.body);
+
+
+    const { id, nom_image, etat } = req.body;
+    try {
+        console.log("Test");
+        db.query('UPDATE carte_metisse SET  nom_image=?, etat=? WHERE id= ?', [nom_image, etat, id], async(error, results) => {
+            console.log("*******", results)
+            if (results) {
+                return res.send({
+                    success: true
+                });
+            } else {
+                return res.send({
+                    success: error
+                });
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
+//---------------- majEtatEvent
+exports.majEtatCarte = (req, res) => {
+    try {
+        const id = req.body.id;
+        const etat = req.body.etat;
+
+        db.query('UPDATE carte_metisse SET  etat=?  WHERE id= ?', [etat, id], async(error, results) => {
+            if (results) {
+                return res.send({
+                    success: true
+                });
+            } else {
+                return res.send({
+                    success: error
+                });
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
+//__________________________________Carte metisse____________________________________
+
+exports.listeCarteApk = (req, res) => {
+    try {
+        db.query('SELECT * FROM carte_metisse WHERE etat= 1', async(error, results) => {
+            if (results) {
+                return res.json(results);
+            } else {
+                return res.json({
+                    success: error
+                });
             }
         })
     } catch (err) {

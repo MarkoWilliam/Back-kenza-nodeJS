@@ -37,15 +37,21 @@ exports.insertion = (req, res) => {
     console.log("************", req.body);
     const { uuid, created_date } = req.body;
     try {
-        db.query('INSERT INTO devices SET ?', { uuid: uuid, created_date: created_date }, (error, results) => {
-            if (results) {
-                res.send({
-                    success: true
-                });
+        db.query('SELECT uuid FROM devices WHERE uuid = ?', uuid, (error, results) => {
+            if (results.length > 0) {
+                console.log("Le code existe déja")
             } else {
-                res.send({
-                    success: error
-                });
+                db.query('INSERT INTO devices SET ?', { uuid: uuid, created_date: created_date }, (error, results) => {
+                    if (results) {
+                        res.send({
+                            success: true
+                        });
+                    } else {
+                        res.send({
+                            success: error
+                        });
+                    }
+                })
             }
         })
     } catch (err) {

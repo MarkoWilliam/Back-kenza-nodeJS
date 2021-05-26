@@ -16,4 +16,6 @@ router.post('/insertion', deviceController.insertion);
 
 
 
+
+
 module.exports = router;
